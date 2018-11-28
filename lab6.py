@@ -48,12 +48,7 @@ class Polygon(Turtle):
 		turtle.register_shape("polygon", polygon)
 		self.shape("polygon")
 		self.setheading(45)
-	def moveShape(self, speed):
-		self.speed = speed
-		self.goto	
+
 test = Polygon(8,60)
-# while True:
-# 	while test.pos()[0] < 300 or test.pos()[0] > -300 or test.post()[1] < 300 or test.post()[1] > -300:
-# 		test.forward(1)
-# 	test.left(90)	
+
 turtle.mainloop()		
