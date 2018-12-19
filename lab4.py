@@ -31,7 +31,7 @@ class Song(object):
 		self.lyrics = lyrics
 	def sing_me_a_song(self):
 		for i in self.lyrics:
-			print i
+			print(i)
 		
 flower_song = Song(["Roses are red, ","violets are blue, ","I wrote this poem just for you"])
 flower_song.sing_me_a_song()

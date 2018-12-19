@@ -1,19 +1,19 @@
-import Tkinter as tk
-import tkSimpleDialog as simpledialog
+import tkinter as tk
+from tkinter import simpledialog
 #
 #Then when ever you want to ask the user for input use this code
-#greeting = simpledialog.askstring("Input", "Hello, possible pirate! What's the password?", parent=tk.Tk().withdraw())
-#if greeting in ("Arrr!"):
-#    print("Go away, pirate.")
-#else:
-#	print("Greetings, hater of pirates!")
+greeting = simpledialog.askstring("Input", "Hello, possible pirate! What's the password?", parent=tk.Tk().withdraw())
+if greeting in ("Arrr!"):
+    print("Go away, pirate.")
+else:
+	print("Greetings, hater of pirates!")
 
 ############################################
 
 # A time traveler has suddenly appeared in your classroom!
 
 # Create a variable representing the traveler's
-# year of origin (e.g., year = 2000)
+# year of origin (e.g., year = 2000)b
 # and greet our strange visitor with a different message
 # if he is from the distant past (before 1900),
 # the present era (1900-2020) or from the far future (beyond 2020).
