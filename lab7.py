@@ -2,6 +2,15 @@ import turtle
 from turtle import Turtle
 import random 
 turtle.tracer(0)
+
+NUMBER_OF_BALLS = 5
+MINIMUM_BALL_RADIUS = 10
+MAXIMUM_BALL_RADIUS = 100
+MINIMUM_BALL_DX = -5
+MAXIMUM_BALL_DX = 5
+MINIMUM_BALL_DY = -5
+MAXIMUM_BALL_DY = 5
+
 class Ball(Turtle):
 	def __init__(self, radius, color, x, y, dx,dy):
 		Turtle.__init__(self)
@@ -13,20 +22,22 @@ class Ball(Turtle):
 		self.goto(x,y)
 		self.dx = dx
 		self.dy = dy
-	def moveBall(self):
+
+	def moveBall(self, screen_width, screen_height):
 		oldx = self.xcor()
 		oldy = self.ycor()
 		newx = oldx + self.dx
 		newy = oldy + self.dy
 		self.goto(newx,newy)
-		if self.xcor() + self.radius >= 450:
+		if self.xcor() + self.radius >= screen_width:
 			self.dx = -self.dx
-		if self.ycor() + self.radius >= 400:
+		if self.ycor() + self.radius >= screen_height:
 			self.dy = -self.dy
-		if self.xcor() - self.radius <= -450:
+		if self.xcor() - self.radius <= -screen_width:
 			self.dx = -self.dx
-		if self.ycor() - self.radius <= -400:
+		if self.ycor() - self.radius <= -screen_height:
 			self.dy = -self.dy
+
 def collision(ball1,ball2,choice):
 	radius_sum = ball1.radius + ball2.radius
 	d = ((ball1.xcor() - ball2.xcor())**2 + (ball1.ycor() - ball2.ycor())**2)**0.5
@@ -48,8 +59,10 @@ def collision(ball1,ball2,choice):
 				ball2.goto(random.randint(-450+ball2.radius,450-ball2.radius),random.randint(-400+ball2.radius,400-ball2.radius))
 				ball1.radius+=2
 				ball1.shapesize(ball1.radius/10)
+
 def func(event):
     ball3.goto(event.x-475, 405-event.y)
+
 border = Turtle()
 border.hideturtle()
 border.penup()
@@ -65,10 +78,11 @@ ball3 = Ball(50,"cyan",-200,-200,0,0)
 wn = turtle.Screen()
 screen = wn.getcanvas()
 screen.bind('<Motion>', func)
+
 while True:
-	ball1.moveBall()
-	ball2.moveBall()
+	ball1.moveBall(450,400)
+	ball2.moveBall(450,400)
 	collision(ball1,ball2,'eat')
 	turtle.update()
 		
-turtle.mainloop()
+turtle.mainloop() 
