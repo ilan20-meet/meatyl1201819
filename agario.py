@@ -3,6 +3,7 @@ import turtle
 import time
 import random
 from ball import Ball
+import sched, time
 
 turtle.tracer(0)
 turtle.listen()
@@ -12,28 +13,12 @@ SCREEN_HEIGHT = turtle.getcanvas().winfo_height()/2
 RUNNING = True
 SLEEP = 0.0077
 
+DEATH_COUNT = 0
+
+s = time.time()
+
 #a function that makes the larger ball grow and the smaller ball teleport if they collide
-def collision(ball1,ball2,choice):
-	radius_sum = ball1.radius + ball2.radius
-	d = ((ball1.xcor() - ball2.xcor())**2 + (ball1.ycor() - ball2.ycor())**2)**0.5
-	if(d < radius_sum):
-		# --SWAP DIRECTIONS--
-		if choice == 'swapDirections':
-			tempX =  ball1.dx
-			tempY = ball1.dy
-			ball1.dx = ball2.dx
-			ball1.dy = ball2.dy
-			ball2.dx = tempX
-			ball2.dy = tempY
-		elif choice == 'eat':
-			if ball1.radius < ball2.radius:
-				ball1.goto(random.randint(-SCREEN_WIDTH+ball1.radius,SCREEN_WIDTH-ball1.radius),random.randint(-SCREEN_HEIGHT+ball1.radius,SCREEN_HEIGHT-ball1.radius))
-				ball2.radius+=2
-				ball2.shapesize(ball2.radius/10)
-			else:
-				ball2.goto(random.randint(-SCREEN_WIDTH+ball2.radius,SCREEN_WIDTH-ball2.radius),random.randint(-SCREEN_HEIGHT+ball2.radius,SCREEN_HEIGHT-ball2.radius))
-				ball1.radius+=2
-				ball1.shapesize(ball1.radius/10)
+
 
 def func(event):
     MY_BALL.goto(event.x-475, 405-event.y)
@@ -41,7 +26,7 @@ def func(event):
 def collision(ball1,ball2,choice):
 	radius_sum = ball1.radius + ball2.radius
 	d = ((ball1.xcor() - ball2.xcor())**2 + (ball1.ycor() - ball2.ycor())**2)**0.5
-	if(d < radius_sum):
+	if(d < radius_sum and time.time() >= s + 3):
 		# --SWAP DIRECTIONS--
 		if choice == 'swapDirections':
 			tempX =  ball1.dx
@@ -57,16 +42,18 @@ def collision(ball1,ball2,choice):
 				ball1.shapesize(ball1.radius/10)
 				ball2.radius+=2
 				ball2.shapesize(ball2.radius/10)
+				return False	
 			else:
 				ball2.goto(random.randint(-SCREEN_WIDTH+ball2.radius,SCREEN_WIDTH-ball2.radius),random.randint(-SCREEN_HEIGHT+ball2.radius,SCREEN_HEIGHT-ball2.radius))
 				ball2.radius = random.randint(MINIMUM_BALL_RADIUS,MAXIMUM_BALL_RADIUS)
 				ball2.shapesize(ball2.radius/10)
 				ball1.radius+=2
 				ball1.shapesize(ball1.radius/10)
-
+				return True	
+			
 NUMBER_OF_BALLS = 5
-MINIMUM_BALL_RADIUS = 10
-MAXIMUM_BALL_RADIUS = 100
+MINIMUM_BALL_RADIUS = 50
+MAXIMUM_BALL_RADIUS = 80
 MINIMUM_BALL_DX = -5
 MAXIMUM_BALL_DX = 5
 MINIMUM_BALL_DY = -5
@@ -98,13 +85,21 @@ for i in range(NUMBER_OF_BALLS):
 		random.randint(-SCREEN_HEIGHT + MAXIMUM_BALL_RADIUS, SCREEN_HEIGHT - MAXIMUM_BALL_RADIUS) , dx, dy))
 
 while RUNNING:
+	print(DEATH_COUNT)
+	win = False
 	for i in range(NUMBER_OF_BALLS):
 		BALLS[i].moveBall(SCREEN_WIDTH,SCREEN_HEIGHT)
 		for j in range(NUMBER_OF_BALLS):
 			if i!=j:
 				collision(BALLS[i],BALLS[j],'eat')
-		collision(BALLS[i],MY_BALL,'eat')		
+		if(collision(BALLS[i],MY_BALL,'eat')):
+			DEATH_COUNT+=1		
+		elif(MY_BALL.radius >= 330):
+			win = True	
 	turtle.update()
 	time.sleep(SLEEP)
-
+	if(DEATH_COUNT > 3):
+		break
+	if(win):
+		break	
 turtle.mainloop()
