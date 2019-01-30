@@ -16,12 +16,16 @@ SLEEP = 0.0077
 DEATH_COUNT = 0
 
 s = time.time()
-
+Background = turtle.Screen()
+Background.register_shape("background.gif")
+Background.bgpic("background.gif")
 #a function that makes the larger ball grow and the smaller ball teleport if they collide
-
-
+scoreTurtle = turtle.clone()
+scoreTurtle.hideturtle()
+scoreTurtle.penup()
+scoreTurtle.goto(-285,200)
 def func(event):
-    MY_BALL.goto(event.x-475, 405-event.y)
+    MY_BALL.goto(event.x-322, 275-event.y)
 
 def collision(ball1,ball2,choice):
 	radius_sum = ball1.radius + ball2.radius
@@ -52,8 +56,8 @@ def collision(ball1,ball2,choice):
 				return True	
 			
 NUMBER_OF_BALLS = 5
-MINIMUM_BALL_RADIUS = 50
-MAXIMUM_BALL_RADIUS = 80
+MINIMUM_BALL_RADIUS = 25
+MAXIMUM_BALL_RADIUS = 58
 MINIMUM_BALL_DX = -5
 MAXIMUM_BALL_DX = 5
 MINIMUM_BALL_DY = -5
@@ -61,7 +65,7 @@ MAXIMUM_BALL_DY = 5
 
 BALLS = []
 
-MY_BALL = Ball(65,"cyan",-200,-200,0,0)				
+MY_BALL = Ball(50,"cyan",-200,-200,0,0)				
 
 wn = turtle.Screen()
 screen = wn.getcanvas()
@@ -84,22 +88,29 @@ for i in range(NUMBER_OF_BALLS):
 		random.randint(-SCREEN_WIDTH + MAXIMUM_BALL_RADIUS, SCREEN_WIDTH - MAXIMUM_BALL_RADIUS),
 		random.randint(-SCREEN_HEIGHT + MAXIMUM_BALL_RADIUS, SCREEN_HEIGHT - MAXIMUM_BALL_RADIUS) , dx, dy))
 
+score = 0
+scoreTurtle.write(int(score),align="center",font=("times",33,"bold"))
 while RUNNING:
-	print(DEATH_COUNT)
+	
 	win = False
 	for i in range(NUMBER_OF_BALLS):
 		BALLS[i].moveBall(SCREEN_WIDTH,SCREEN_HEIGHT)
 		for j in range(NUMBER_OF_BALLS):
+			if(collision(BALLS[i],MY_BALL,'eat') == False):
+				scoreTurtle.clear()
+				score+=1		
+				scoreTurtle.write(int(score),align="center",font=("times",33,"bold"))
+			elif(collision(BALLS[i],MY_BALL,'eat')):
+				DEATH_COUNT+=1	
+				scoreTurtle.clear()
+				score = 0
+				scoreTurtle.write(int(score),align="center",font=("times",33,"bold"))
 			if i!=j:
 				collision(BALLS[i],BALLS[j],'eat')
-		if(collision(BALLS[i],MY_BALL,'eat')):
-			DEATH_COUNT+=1		
-		elif(MY_BALL.radius >= 330):
-			win = True	
+	if(score > 30):
+		break			
 	turtle.update()
 	time.sleep(SLEEP)
 	if(DEATH_COUNT > 3):
 		break
-	if(win):
-		break	
 turtle.mainloop()
